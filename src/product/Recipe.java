@@ -1,10 +1,10 @@
 package product;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class Recipe {
+    private Map<Product, Integer> recipe = new HashMap<>();
+
     ListOfProduct listOfProduct;
     private Double cost;
     private String recipeName;
@@ -26,8 +26,18 @@ public class Recipe {
         this.recipeName = recipeName;
     }
 
-    public Set<Recipe> getRecipes() {
-        return recipes;
+    public Recipe() {
+
+    }
+
+    public void addProductToRecipe(Product product, Integer quantity) {
+        if (product == null){
+            recipe.put(product, quantity);
+        }
+    }
+
+    public void getProductPrice(Product product) {
+
     }
 
     @Override
@@ -43,18 +53,42 @@ public class Recipe {
         return Objects.hash(recipeName);
     }
 
-    public void addRecipe(Recipe recipe){
-        if (recipes.contains(recipe)){
+    public void addRecipe(Recipe recipe) {
+        if (recipes.contains(recipe)) {
             throw new IllegalArgumentException("Такой рецепт уже есть в списке");
-        }else {
+        } else {
             recipes.add(recipe);
         }
     }
 
-    public Recipe(ListOfProduct listOfProduct, Double cost, String recipeName, Set<Recipe> recipes) {
-        this.listOfProduct = listOfProduct;
-        this.cost = cost;
+    public Recipe(Map<Product, Integer> recipe, String recipeName, Set<Recipe> recipes) {
+        this.recipe = recipe;
         this.recipeName = recipeName;
         this.recipes = recipes;
     }
+
+    @Override
+    public String toString() {
+        return recipe + ", " + recipeName;
+    }
+
+    public void countPrice(Recipe recipe) {
+        double price = 0;
+        Iterator<Map.Entry<Product, Integer>> iterator = recipe.recipe.entrySet().iterator();
+        for (int i = 0; ; i++) {
+            if (iterator.hasNext()) {
+                Map.Entry<Product, Integer> entry = iterator.next();
+                if (entry.getValue() >= 1) {
+                    price += entry.getKey().getProductPrice() * entry.getValue();
+                } else {
+                    price += entry.getKey().getProductPrice() * 1;
+                }
+            }
+            break;
+        }
+        System.out.printf("The total price of %s is %.2f ", recipe.getRecipeName(), price);
+    }
 }
+
+
+
